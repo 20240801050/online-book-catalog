@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Book Catalog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 30px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        h1 { color: #243b55; }
+        .card {
+            background: white;
+            padding: 22px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ddd;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background: #243b55;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th { background: #243b55; color: white; }
+        .message { color: green; }
+        .delete { background: #c0392b; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📚 Online Book Catalog</h1>
+    <p>Manage, search, and explore your book collection.</p>
+
+    <div class="card">
+        <h2>Add a New Book</h2>
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p class="message">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form action="/add" method="POST">
+            <input name="title" placeholder="Book Title" required>
+            <input name="author" placeholder="Author" required>
+            <input name="isbn" placeholder="ISBN" required>
+            <input name="genre" placeholder="Genre" required>
+            <input name="year" type="number" placeholder="Publication Year" required>
+            <button type="submit">Add Book</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Search Books</h2>
+        <form action="/" method="GET">
+            <input name="search" placeholder="Search title, author, or ISBN"
+                   value="{{ search }}">
+            <button type="submit">Search</button>
+            <a href="/">Show All</a>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Book Collection</h2>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Genre</th>
+                <th>Year</th>
+                <th>Action</th>
+            </tr>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.isbn }}</td>
+                <td>{{ book.genre }}</td>
+                <td>{{ book.year }}</td>
+                <td>
+                    <form action="/delete/{{ book.id }}" method="POST">
+                        <button class="delete" type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">No books found.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+</body>
+</html>
